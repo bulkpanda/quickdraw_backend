@@ -40,10 +40,10 @@ datasetPath='inference'
 def play():
     data= json.loads(request.data.decode('utf-8'))
     image_data = data['image'].split(',')[1].encode('utf-8')
-    os.makedirs(f'{datasetPath}/image', exist_ok=True)
-    with open(f'{datasetPath}/image/imagetoinfer.png', 'wb') as fh:
+    os.makedirs(f'inference/image', exist_ok=True)
+    with open(f'inference/image/imagetoinfer.png', 'wb') as fh:
         fh.write(base64.decodebytes(image_data))
-    path=datasetPath + '/image/'+'imagetoinfer.png' # change this value to test your own images
+    path='inference/image/'+'imagetoinfer.png' # change this value to test your own images
     return test(path)    
 
 #============================================Create Dataset=======================================================================
