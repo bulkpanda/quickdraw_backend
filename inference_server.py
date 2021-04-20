@@ -111,7 +111,7 @@ def play():
         fh.write(base64.decodebytes(image_data)) # saving image to the inference directory
     filepath='inference/image/imagetoinfer.png' 
     return test(filepath,pathhistory)    
-    
+
 
 #============================================Create Dataset=======================================================================
 # part for receiving training data from dataset-creation module
@@ -136,23 +136,26 @@ def upload_canvas():
     return "Got the image " + className   
 
 
-#=========================Saving wrong predictions================================================
+#=========================Saving wrong and correct predictions================================================
 # similar to create dataset part but here we store the wrong predictions made by the model under correct directory
-# datasetPath refers to the base directory for storing wrong prediction data
+# datasetPath2 refers to the base directory for storing wrong prediction data
 # no difference in implementation except the datasetPath value
-datasetPath='./wrongpred'
-@app.route('/api/upload_wrongpred', methods=['POST'])
-def upload_wrongpred():
+
+@app.route('/api/upload_pred', methods=['POST'])
+def upload_pred():
     data= json.loads(request.data.decode('utf-8'))
     image_data = data['image'].split(',')[1].encode('utf-8')
     filename = data['filename']
     fname=filename.split('.')[0]
     className = data['className']
     pathhistory = data['path']
-    
-    os.makedirs(f'{datasetPath}/{className}/image', exist_ok=True)
-    with open(f'{datasetPath}/{className}/image/{filename}', 'wb') as fh:
+    if data['iscorrect']:
+      datasetPath2='./correctpred'
+    else:
+      datasetPath2='./wrongpred'
+    os.makedirs(f'{datasetPath2}/{className}/image', exist_ok=True)
+    with open(f'{datasetPath2}/{className}/image/{filename}', 'wb') as fh:
         fh.write(base64.decodebytes(image_data))
-    os.makedirs(f'{datasetPath}/{className}/path', exist_ok=True)
-    np.save(f'{datasetPath}/{className}/path/{fname}.npy', pathhistory)
+    os.makedirs(f'{datasetPath2}/{className}/path', exist_ok=True)
+    np.save(f'{datasetPath2}/{className}/path/{fname}.npy', pathhistory)
     return "Got the correct class " + className     
